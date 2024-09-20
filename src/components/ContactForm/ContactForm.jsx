@@ -3,13 +3,18 @@ import * as Yup from "yup";
 import { useId } from "react";
 import css from "./ContactForm.module.css";
 import { useDispatch } from "react-redux";
-import { addContact } from "../../redux/contactsOps";
+import { addContact } from "../../redux/contacts/operations";
+import toast, { Toaster } from "react-hot-toast";
 
 const ContactForm = () => {
   const dispatch = useDispatch();
 
   const onAddContact = (newContact) => {
-    dispatch(addContact(newContact));
+    dispatch(addContact(newContact))
+    .unwrap()
+      .then(() => {
+        toast.success("Contact added successfully!");
+      });
   };
 
   const initialValues = { name: "", number: "" };
@@ -32,6 +37,7 @@ const ContactForm = () => {
   };
 
   return (
+     <>
     <Formik
       initialValues={initialValues}
       onSubmit={handleFormSubmit}
@@ -79,6 +85,8 @@ const ContactForm = () => {
         </button>
       </Form>
     </Formik>
+    <Toaster />
+    </>
   );
 };
 

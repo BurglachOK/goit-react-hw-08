@@ -1,18 +1,20 @@
 import { useDispatch, useSelector } from "react-redux";
 import Contact from "../Contact/Contact";
 import css from "./ContactList.module.css";
-import { selectFilteredContacts } from "../../redux/contactsSlice";
-import { deleteContact } from "../../redux/contactsOps";
+import { deleteContact } from "../../redux/contacts/operations";
+import { selectFilteredContacts } from "../../redux/contacts/selectors";
+import toast, { Toaster } from "react-hot-toast";
 
 const ContactList = () => {
   const dispatch = useDispatch();
-
   const filteredContacts = useSelector(selectFilteredContacts);
 
   if (filteredContacts.length === 0) {
     return;
   }
+
   return (
+    <>
     <ul className={css.contactList}>
       {filteredContacts.map(({ id, name, number }) => {
         return (
@@ -22,12 +24,18 @@ const ContactList = () => {
             name={name}
             phone={number}
             deleteContacts={(contactId) => {
-              dispatch(deleteContact(contactId));
+              dispatch(deleteContact(contactId))
+              .unwrap()
+              .then(() => {
+                toast.success("Contact deleted successfully!");
+              });
             }}
           />
         );
       })}
-    </ul>
+      </ul>
+      <Toaster />
+    </>
   );
 };
 
